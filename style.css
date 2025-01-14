@@ -102,3 +102,36 @@ body.dark-mode #channels li {
 #channels li img {
     border-radius: 50%;
 }
+
+#playlistsSection {
+    margin-top: 20px;
+}
+
+#playlists div {
+    margin-bottom: 20px;
+}
+
+#playlists ul {
+    list-style: none;
+    padding: 0;
+}
+
+#playlists li {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px;
+    background-color: #fff;
+    margin-bottom: 5px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+body.dark-mode #playlists li {
+    background-color: #333;
+    color: #f4f4f4;
+}
+
+#parentalControlSection {
+    margin-top: 20px;
+}
