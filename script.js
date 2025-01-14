@@ -1,3 +1,4 @@
+// شاشة التحميل
 window.addEventListener('load', () => {
     setTimeout(() => {
         document.getElementById('splashScreen').style.display = 'none';
@@ -33,10 +34,25 @@ function addChannelToList(channel) {
     card.innerHTML = `
         <img src="${channel.logo}" alt="${channel.name}">
         <h3>${channel.name}</h3>
+        <button class="editBtn"><i class="fas fa-edit"></i></button>
+        <button class="deleteBtn"><i class="fas fa-trash"></i></button>
     `;
     card.addEventListener('click', () => {
         playChannel(channel.url);
     });
+
+    // إضافة حدث للتعديل
+    card.querySelector('.editBtn').addEventListener('click', (e) => {
+        e.stopPropagation();
+        editChannel(card, channel);
+    });
+
+    // إضافة حدث للحذف
+    card.querySelector('.deleteBtn').addEventListener('click', (e) => {
+        e.stopPropagation();
+        deleteChannel(card, channel);
+    });
+
     channelsList.appendChild(card);
 }
 
@@ -77,6 +93,32 @@ addChannelBtn.addEventListener('click', () => {
     }
 });
 
+// تعديل قناة
+function editChannel(card, channel) {
+    const newName = prompt("أدخل الاسم الجديد:", channel.name);
+    const newUrl = prompt("أدخل الرابط الجديد:", channel.url);
+    const newLogo = prompt("أدخل رابط الشعار الجديد:", channel.logo);
+
+    if (newName && newUrl) {
+        channel.name = newName;
+        channel.url = newUrl;
+        channel.logo = newLogo || channel.logo;
+        card.querySelector('h3').textContent = newName;
+        card.querySelector('img').src = channel.logo;
+        saveChannels();
+        showNotification('تم تعديل القناة بنجاح!');
+    }
+}
+
+// حذف قناة
+function deleteChannel(card, channel) {
+    if (confirm(`هل تريد حذف قناة ${channel.name}؟`)) {
+        card.remove();
+        saveChannels();
+        showNotification('تم حذف القناة بنجاح!');
+    }
+}
+
 // حفظ القنوات في localStorage
 function saveChannels() {
     const channels = [];
@@ -89,9 +131,6 @@ function saveChannels() {
     });
     localStorage.setItem('channels', JSON.stringify(channels));
 }
-
-// تحميل القنوات عند بدء التشغيل
-loadChannels();
 
 // إنشاء قائمة تشغيل
 const createPlaylistBtn = document.getElementById('createPlaylistBtn');
@@ -190,5 +229,29 @@ scrollToTopBtn.addEventListener('click', () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
 });
 
-// تحميل قوائم التشغيل عند بدء التشغيل
+// تحميل القنوات من رابط M3U
+async function loadM3UChannels() {
+    const m3uUrl = 'https://raw.githubusercontent.com/Free-TV/IPTV/master/README.md'; // استبدل بالرابط الصحيح
+    const response = await fetch(m3uUrl);
+    const data = await response.text();
+
+    const channels = [];
+    const lines = data.split('\n');
+    for (let i = 0; i < lines.length; i++) {
+        if (lines[i].startsWith('#EXTINF')) {
+            const name = lines[i].split(',')[1].trim();
+            const url = lines[i + 1].trim();
+            const logo = ''; // يمكنك استخراج الشعار من البيانات إذا كان متاحًا
+            channels.push({ name, url, logo });
+        }
+    }
+
+    channels.forEach(channel => {
+        addChannelToList(channel);
+    });
+}
+
+// تحميل القنوات وقوائم التشغيل عند بدء التشغيل
+loadChannels();
 loadPlaylists();
+loadM3UChannels();
