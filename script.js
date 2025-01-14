@@ -28,29 +28,16 @@ function loadChannels() {
 // إضافة قناة إلى القائمة
 function addChannelToList(channel) {
     const channelsList = document.getElementById('channels');
-    const li = document.createElement('li');
-    li.innerHTML = `
-        <img src="${channel.logo}" alt="${channel.name}" height="20">
-        <span>${channel.name}</span>
-        <button class="editBtn">تعديل</button>
-        <button class="deleteBtn">حذف</button>
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.innerHTML = `
+        <img src="${channel.logo}" alt="${channel.name}">
+        <h3>${channel.name}</h3>
     `;
-    li.addEventListener('click', () => {
+    card.addEventListener('click', () => {
         playChannel(channel.url);
     });
-    channelsList.appendChild(li);
-
-    // إضافة حدث للتعديل
-    li.querySelector('.editBtn').addEventListener('click', (e) => {
-        e.stopPropagation();
-        editChannel(li, channel);
-    });
-
-    // إضافة حدث للحذف
-    li.querySelector('.deleteBtn').addEventListener('click', (e) => {
-        e.stopPropagation();
-        deleteChannel(li, channel);
-    });
+    channelsList.appendChild(card);
 }
 
 // تشغيل القناة
@@ -64,13 +51,13 @@ function playChannel(url) {
 const searchInput = document.getElementById('searchInput');
 searchInput.addEventListener('input', (e) => {
     const searchTerm = e.target.value.toLowerCase();
-    const channels = document.querySelectorAll('#channels li');
-    channels.forEach(channel => {
-        const channelName = channel.textContent.toLowerCase();
+    const cards = document.querySelectorAll('.card');
+    cards.forEach(card => {
+        const channelName = card.querySelector('h3').textContent.toLowerCase();
         if (channelName.includes(searchTerm)) {
-            channel.style.display = 'flex';
+            card.style.display = 'block';
         } else {
-            channel.style.display = 'none';
+            card.style.display = 'none';
         }
     });
 });
@@ -86,45 +73,25 @@ addChannelBtn.addEventListener('click', () => {
         const channel = { name, url, logo: logo || 'https://via.placeholder.com/20' };
         addChannelToList(channel);
         saveChannels();
+        showNotification('تمت إضافة القناة بنجاح!');
     }
 });
-
-// تعديل قناة
-function editChannel(li, channel) {
-    const newName = prompt("أدخل الاسم الجديد:", channel.name);
-    const newUrl = prompt("أدخل الرابط الجديد:", channel.url);
-    const newLogo = prompt("أدخل رابط الشعار الجديد:", channel.logo);
-
-    if (newName && newUrl) {
-        channel.name = newName;
-        channel.url = newUrl;
-        channel.logo = newLogo || channel.logo;
-        li.querySelector('span').textContent = newName;
-        li.querySelector('img').src = channel.logo;
-        saveChannels();
-    }
-}
-
-// حذف قناة
-function deleteChannel(li, channel) {
-    if (confirm(`هل تريد حذف قناة ${channel.name}؟`)) {
-        li.remove();
-        saveChannels();
-    }
-}
 
 // حفظ القنوات في localStorage
 function saveChannels() {
     const channels = [];
-    document.querySelectorAll('#channels li').forEach(li => {
+    document.querySelectorAll('.card').forEach(card => {
         channels.push({
-            name: li.querySelector('span').textContent,
-            url: li.querySelector('img').getAttribute('src'),
-            logo: li.querySelector('img').getAttribute('src')
+            name: card.querySelector('h3').textContent,
+            url: card.querySelector('img').getAttribute('src'),
+            logo: card.querySelector('img').getAttribute('src')
         });
     });
     localStorage.setItem('channels', JSON.stringify(channels));
 }
+
+// تحميل القنوات عند بدء التشغيل
+loadChannels();
 
 // إنشاء قائمة تشغيل
 const createPlaylistBtn = document.getElementById('createPlaylistBtn');
@@ -134,6 +101,7 @@ createPlaylistBtn.addEventListener('click', () => {
         const playlist = { name: playlistName, channels: [] };
         addPlaylist(playlist);
         savePlaylists();
+        showNotification('تم إنشاء قائمة التشغيل بنجاح!');
     }
 });
 
@@ -184,18 +152,43 @@ parentalControlBtn.addEventListener('click', () => {
     if (password === "1234") { // كلمة المرور الافتراضية
         const channelName = prompt("أدخل اسم القناة التي تريد حجبها:");
         if (channelName) {
-            const channels = document.querySelectorAll('#channels li');
-            channels.forEach(li => {
-                if (li.querySelector('span').textContent === channelName) {
-                    li.style.display = 'none';
+            const cards = document.querySelectorAll('.card');
+            cards.forEach(card => {
+                if (card.querySelector('h3').textContent === channelName) {
+                    card.style.display = 'none';
                 }
             });
+            showNotification('تم حجب القناة بنجاح!');
         }
     } else {
-        alert("كلمة المرور غير صحيحة!");
+        showNotification('كلمة المرور غير صحيحة!');
     }
 });
 
-// تحميل القنوات وقوائم التشغيل عند بدء التشغيل
-loadChannels();
+// إشعارات
+function showNotification(message) {
+    const notification = document.getElementById('notification');
+    notification.textContent = message;
+    notification.classList.add('show');
+    setTimeout(() => {
+        notification.classList.remove('show');
+    }, 3000);
+}
+
+// زر الانتقال إلى الأعلى
+const scrollToTopBtn = document.getElementById('scrollToTopBtn');
+
+window.addEventListener('scroll', () => {
+    if (window.scrollY > 300) {
+        scrollToTopBtn.style.display = 'block';
+    } else {
+        scrollToTopBtn.style.display = 'none';
+    }
+});
+
+scrollToTopBtn.addEventListener('click', () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+});
+
+// تحميل قوائم التشغيل عند بدء التشغيل
 loadPlaylists();
