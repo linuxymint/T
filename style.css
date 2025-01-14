@@ -1,17 +1,19 @@
+
+/* التصميم العام */
 body {
     font-family: 'Tajawal', sans-serif;
-    background-color: #f4f4f4;
-    color: #333;
+    background: linear-gradient(135deg, #007BFF, #00BFFF);
+    color: white;
     margin: 0;
     padding: 0;
     transition: background-color 0.3s, color 0.3s;
 }
 
 body.dark-mode {
-    background-color: #1a1a1a;
-    color: #f4f4f4;
+    background: linear-gradient(135deg, #1a1a1a, #333);
 }
 
+/* شاشة التحميل */
 .splash-screen {
     position: fixed;
     top: 0;
@@ -23,12 +25,65 @@ body.dark-mode {
     justify-content: center;
     align-items: center;
     z-index: 1000;
+    animation: fadeIn 1s ease-in-out;
 }
 
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* القائمة الجانبية */
+.sidebar {
+    width: 250px;
+    height: 100vh;
+    background-color: #333;
+    color: white;
+    position: fixed;
+    top: 0;
+    left: -250px;
+    transition: left 0.3s;
+}
+
+.sidebar ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.sidebar ul li {
+    padding: 15px;
+    border-bottom: 1px solid #444;
+}
+
+.sidebar ul li a {
+    color: white;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.sidebar ul li a:hover {
+    background-color: #444;
+}
+
+.sidebar.active {
+    left: 0;
+}
+
+/* واجهة التطبيق */
 .app-container {
     max-width: 1200px;
     margin: 0 auto;
     padding: 20px;
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+body.dark-mode .app-container {
+    background-color: #333;
 }
 
 header {
@@ -38,24 +93,16 @@ header {
     margin-bottom: 20px;
 }
 
-nav ul {
-    list-style: none;
-    padding: 0;
-    display: flex;
-    gap: 15px;
+header h1 {
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
 }
 
-nav ul li a {
-    text-decoration: none;
-    color: #333;
-}
-
-body.dark-mode nav ul li a {
-    color: #f4f4f4;
-}
-
-#playerSection {
-    margin-bottom: 20px;
+/* مشغل الفيديو */
+.video-container {
+    position: relative;
+    width: 100%;
+    max-width: 800px;
+    margin: 0 auto;
 }
 
 #videoPlayer {
@@ -64,10 +111,48 @@ body.dark-mode nav ul li a {
     max-height: 500px;
 }
 
+#progressBar {
+    width: 100%;
+    height: 5px;
+    background-color: #ccc;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+}
+
+#progress {
+    height: 100%;
+    width: 0;
+    background-color: #007BFF;
+    transition: width 0.1s;
+}
+
 .quality-controls {
     margin-top: 10px;
 }
 
+.quality-controls select {
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    background-color: white;
+    font-size: 16px;
+    cursor: pointer;
+    transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.quality-controls select:hover {
+    border-color: #007BFF;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+}
+
+.quality-controls select:focus {
+    outline: none;
+    border-color: #007BFF;
+    box-shadow: 0 0 10px rgba(0, 123, 255, 0.5);
+}
+
+/* قائمة القنوات */
 #channelList {
     margin-top: 20px;
 }
@@ -78,31 +163,40 @@ body.dark-mode nav ul li a {
     margin-bottom: 10px;
 }
 
-#channels {
-    list-style: none;
-    padding: 0;
-}
-
-#channels li {
+.cards-container {
     display: flex;
-    align-items: center;
+    flex-wrap: wrap;
     gap: 10px;
-    padding: 10px;
-    background-color: #fff;
-    margin-bottom: 5px;
-    cursor: pointer;
-    border-radius: 5px;
 }
 
-body.dark-mode #channels li {
-    background-color: #333;
-    color: #f4f4f4;
+.card {
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 15px;
+    width: 200px;
+    text-align: center;
+    transition: transform 0.2s, box-shadow 0.2s;
 }
 
-#channels li img {
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+}
+
+.card img {
     border-radius: 50%;
+    width: 80px;
+    height: 80px;
+    margin-bottom: 10px;
 }
 
+.card h3 {
+    margin: 0;
+    font-size: 18px;
+}
+
+/* قوائم التشغيل */
 #playlistsSection {
     margin-top: 20px;
 }
@@ -132,6 +226,62 @@ body.dark-mode #playlists li {
     color: #f4f4f4;
 }
 
+/* التحكم الأبوي */
 #parentalControlSection {
     margin-top: 20px;
+}
+
+/* زر الانتقال إلى الأعلى */
+#scrollToTopBtn {
+    display: none;
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    padding: 10px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 18px;
+    transition: background-color 0.3s;
+}
+
+#scrollToTopBtn:hover {
+    background-color: #0056b3;
+}
+
+/* إشعارات */
+.notification {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: #28a745;
+    color: white;
+    padding: 15px;
+    border-radius: 5px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    display: none;
+}
+
+.notification.show {
+    display: block;
+    animation: fadeInOut 3s ease-in-out;
+}
+
+@keyframes fadeInOut {
+    0%, 100% { opacity: 0; }
+    10%, 90% { opacity: 1; }
+}
+
+/* تأثيرات نصية */
+.animated-text {
+    animation: slideIn 1s ease-out;
+    font-size: 24px;
+    color: #007BFF;
+}
+
+@keyframes slideIn {
+    from { transform: translateX(-100%); }
+    to { transform: translateX(0); }
 }
