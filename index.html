@@ -3,18 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>تطبيق قنوات التلفاز</title>
-    <link rel="stylesheet" href="css/style.css">
+    <title>تطبيق قنوات التلفاز العراقية</title>
+    <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
+    <!-- شاشة التحميل -->
     <div class="splash-screen" id="splashScreen">
-        <img src="images/logo.png" alt="Logo">
+        <img src="https://i.imgur.com/mXBZEQP.png" alt="Logo">
     </div>
 
+    <!-- واجهة التطبيق -->
     <div class="app-container">
         <header>
-            <h1>قنوات التلفاز</h1>
+            <h1>قنوات التلفاز العراقية</h1>
             <button id="themeToggle">الوضع الليلي</button>
         </header>
 
@@ -28,6 +30,7 @@
         </nav>
 
         <main>
+            <!-- مشغل الفيديو -->
             <section id="playerSection">
                 <video id="videoPlayer" controls>
                     <source src="" type="video/mp4">
@@ -43,14 +46,29 @@
                 </div>
             </section>
 
+            <!-- قائمة القنوات -->
             <section id="channelList">
                 <h2>Iraq</h2>
                 <input type="text" id="searchInput" placeholder="ابحث عن قناة...">
+                <button id="addChannelBtn">إضافة قناة</button>
                 <ul id="channels"></ul>
+            </section>
+
+            <!-- قوائم التشغيل -->
+            <section id="playlistsSection">
+                <h2>قوائم التشغيل</h2>
+                <button id="createPlaylistBtn">إنشاء قائمة تشغيل</button>
+                <div id="playlists"></div>
+            </section>
+
+            <!-- التحكم الأبوي -->
+            <section id="parentalControlSection">
+                <h2>التحكم الأبوي</h2>
+                <button id="parentalControlBtn">حجب قناة</button>
             </section>
         </main>
     </div>
 
-    <script src="js/script.js" defer></script>
+    <script src="script.js"></script>
 </body>
 </html>
